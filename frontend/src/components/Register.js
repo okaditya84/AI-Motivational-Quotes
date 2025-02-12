@@ -4,13 +4,11 @@ import { motion } from 'framer-motion';
 import { FaUser, FaLock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import AuthLayout from './AuthLayout';
-import { useTheme } from '../context/ThemeContext';
 
 function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { darkMode, toggleDarkMode } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +33,7 @@ function Register() {
   };
 
   return (
-    <AuthLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
+    <AuthLayout>
       <motion.div
         className="auth-form-container"
         initial={{ opacity: 0 }}
@@ -79,7 +77,6 @@ function Register() {
           <motion.span
             className="link"
             onClick={() => navigate('/login')}
-            whileHover={{ color: darkMode ? '#38E1B9' : '#2D5AF0' }}
           >
             Login here
           </motion.span>

@@ -9,7 +9,6 @@ function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +32,7 @@ function Login() {
   };
 
   return (
-    <AuthLayout darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)}>
+    <AuthLayout>
       <motion.div
         className="auth-form-container"
         initial={{ opacity: 0 }}
@@ -77,7 +76,6 @@ function Login() {
           <motion.span
             className="link"
             onClick={() => navigate('/register')}
-            whileHover={{ color: darkMode ? '#38E1B9' : '#2D5AF0' }}
           >
             Register here
           </motion.span>
