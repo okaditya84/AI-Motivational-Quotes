@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import QuoteCard from './QuoteCard';
-import { useNavigate } from 'react-router-dom';
+import NavBar from './NavBar';
+import { useTheme } from '../context/ThemeContext';
 
 function Dashboard() {
-  const navigate = useNavigate();
   const [quoteData, setQuoteData] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
   const [savedQuotes, setSavedQuotes] = useState([]);
-
   const token = localStorage.getItem('token');
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      window.location.href = '/login';
     } else {
       fetchDailyQuote();
       fetchSavedQuotes();
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchDailyQuote = async () => {
@@ -79,29 +78,17 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   return (
-    <div className={darkMode ? "dashboard dark" : "dashboard"}>
-      <header>
-        <h1>Daily Motivation</h1>
-        <div className="header-actions">
-          <button onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
-      <main>
+    <div className="dashboard" style={{ background: theme.background, color: theme.text }}>
+      <NavBar />
+      <div className="dashboard-content">
+        <h1 className="dashboard-title">Daily Motivation</h1>
         {quoteData ? (
           <div>
-            <QuoteCard quote={quoteData.quote} />
+            <QuoteCard quote={quoteData.quote} onLike={handleLike} onSave={handleSave}/>
             <div className="actions">
-              <button onClick={handleLike}>Like</button>
-              <button onClick={handleSave}>Save</button>
+              <button onClick={handleLike} className="action-button">Like</button>
+              <button onClick={handleSave} className="action-button">Save</button>
             </div>
           </div>
         ) : (
@@ -120,7 +107,7 @@ function Dashboard() {
             <p>No saved quotes.</p>
           )}
         </section>
-      </main>
+      </div>
     </div>
   );
 }
