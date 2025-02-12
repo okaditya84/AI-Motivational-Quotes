@@ -15,6 +15,21 @@
   --divider: #E9ECEF;
 }
 
+/* Dark Mode Overrides */
+.dark {
+  --background: #111827;         /* Dark background */
+  --text: #F9FAFB;               /* Whitish text */
+  --navBg: #1F2937;
+  --primary: #38E1B9;
+  --cardBg: #1F2937;
+  --cardShadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  --gradientBg: linear-gradient(135deg, #38E1B9 0%, #2D5AF0 100%);
+  --inputBg: #374151;
+  --inputBorder: #4B5563;
+  --buttonHover: #059669;
+  --divider: #374151;
+}
+
 /* Body Styling */
 body {
   margin: 0;
