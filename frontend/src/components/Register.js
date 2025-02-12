@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaUser, FaLock } from 'react-icons/fa';
+import { FaUser, FaLock, FaSun, FaMoon } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useTheme } from '../context/ThemeContext';
 

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import random
+from typing import Optional
 
 app = FastAPI()
 
@@ -16,6 +17,13 @@ motivational_quotes = [
 @app.get("/generate_quote")
 def generate_quote():
     quote = random.choice(motivational_quotes)
+    return {"quote": quote}
+
+@app.get("/generate_custom_quote")
+def generate_custom_quote(keywords: Optional[str] = None):
+    quote = random.choice(motivational_quotes)
+    if keywords:
+        quote = f"{quote} - Embrace your journey towards {keywords}"
     return {"quote": quote}
 
 # To run this service, use:

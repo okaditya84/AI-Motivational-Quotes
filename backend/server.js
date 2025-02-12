@@ -198,6 +198,71 @@ app.get('/api/profile', authenticateToken, (req, res) => {
   );
 });
 
+// ------------------------------
+// New Endpoints for Enhanced Features
+// ------------------------------
+
+// Endpoint: Get popular quotes (sorted by number of likes)
+app.get('/api/quotes/popular', (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  db.all(
+    `SELECT q.id, q.text, q.generated_at, COUNT(l.id) as like_count
+     FROM quotes q
+     LEFT JOIN likes l ON q.id = l.quote_id
+     GROUP BY q.id
+     ORDER BY like_count DESC
+     LIMIT ?;`,
+    [limit],
+    (err, rows) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ quotes: rows });
+    }
+  );
+});
+
+// Endpoint: Get latest quotes (sorted by generated date)
+app.get('/api/quotes/latest', (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  db.all(
+    "SELECT * FROM quotes ORDER BY generated_at DESC LIMIT ?;",
+    [limit],
+    (err, rows) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ quotes: rows });
+    }
+  );
+});
+
+// Endpoint: Search quotes by text
+app.get('/api/quotes/search', (req, res) => {
+  const searchQuery = req.query.query;
+  if (!searchQuery) return res.status(400).json({ message: "Query parameter required" });
+  const query = '%' + searchQuery + '%';
+  db.all(
+    "SELECT * FROM quotes WHERE text LIKE ?",
+    [query],
+    (err, rows) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ quotes: rows });
+    }
+  );
+});
+
+// Endpoint: Update user profile (e.g., update username)
+app.put('/api/profile', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const { username } = req.body;
+  if (!username) return res.status(400).json({ message: "Username required" });
+  db.run(
+    "UPDATE users SET username = ? WHERE id = ?",
+    [username, userId],
+    function(err) {
+      if (err) return res.status(500).json({ message: "Database error" });
+      res.json({ message: "Profile updated successfully" });
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }); 

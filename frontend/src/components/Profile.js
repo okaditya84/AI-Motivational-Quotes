@@ -4,6 +4,7 @@ import NavBar from './NavBar';
 import { useTheme } from '../context/ThemeContext';
 import { FaUserCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 function Profile() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ function Profile() {
   const [likedQuotes, setLikedQuotes] = useState([]);
   const [savedQuotes, setSavedQuotes] = useState([]);
   const [profileData, setProfileData] = useState({ username: 'Your Profile' });
+  const [editing, setEditing] = useState(false);
+  const [newUsername, setNewUsername] = useState(profileData.username);
 
   const token = localStorage.getItem('token');
 
@@ -33,6 +36,7 @@ function Profile() {
       });
       const data = await response.json();
       setProfileData(data);
+      setNewUsername(data.username);
     } catch (error) {
       console.error("Error fetching profile data", error);
     }
@@ -59,6 +63,29 @@ function Profile() {
       setSavedQuotes(data.saved_quotes || []);
     } catch (err) {
       console.error("Error fetching saved quotes", err);
+    }
+  };
+
+  const handleProfileUpdate = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/profile', {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        },
+        body: JSON.stringify({ username: newUsername })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Profile updated successfully');
+        setProfileData((prev) => ({ ...prev, username: newUsername }));
+        setEditing(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error('Server error while updating profile');
     }
   };
 
@@ -93,7 +120,29 @@ function Profile() {
           <div className="profile-info">
             <FaUserCircle size={80} color={theme.primary} />
             <div className="profile-details">
-              <h1>{profileData.username}</h1>
+              {editing ? (
+                <>
+                  <input 
+                    type="text"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    style={{ padding: '0.5rem', fontSize: '1.8rem' }}
+                  />
+                  <button onClick={handleProfileUpdate} className="theme-toggle-btn" style={{ marginLeft: '1rem' }}>
+                    Save
+                  </button>
+                  <button onClick={() => setEditing(false)} className="theme-toggle-btn" style={{ marginLeft: '1rem' }}>
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h1>{profileData.username}</h1>
+                  <button onClick={() => setEditing(true)} className="theme-toggle-btn">
+                    Edit Profile
+                  </button>
+                </>
+              )}
               <div className="profile-stats">
                 <span>{likedQuotes.length} Liked</span>
                 <span>{savedQuotes.length} Saved</span>
