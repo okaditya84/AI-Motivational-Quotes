@@ -177,6 +177,27 @@ app.get('/api/quotes/liked', authenticateToken, (req, res) => {
   );
 });
 
+// Profile endpoint to fetch user details and statistics
+app.get('/api/profile', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const username = req.user.username;
+  db.get(
+    "SELECT COUNT(*) as likedCount FROM likes WHERE user_id = ?",
+    [userId],
+    (err, likedRow) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+      db.get(
+        "SELECT COUNT(*) as savedCount FROM saved_quotes WHERE user_id = ?",
+        [userId],
+        (err, savedRow) => {
+          if (err) return res.status(500).json({ message: "Database error" });
+          res.json({ username, likedCount: likedRow.likedCount, savedCount: savedRow.savedCount });
+        }
+      );
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }); 
