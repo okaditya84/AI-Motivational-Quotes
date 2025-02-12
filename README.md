@@ -1,6 +1,6 @@
-# MERN AI Motivational Quotes
+# InspireVerse
 
-Welcome to the **MERN AI Motivational Quotes** application! This project is a full-stack motivation app designed to deliver daily motivational quotes while providing a highly professional, modern UI/UX. The application includes:
+Welcome to the **InspireVerse** application! This project is a full-stack motivation app designed to deliver daily motivational quotes while providing a highly professional, modern UI/UX. The application includes:
 
 - **Frontend:** A React-based app with a modern and responsive design inspired by platforms like Pinterest and Instagram. It includes features like dark/light mode, polished authentication screens, a dynamic dashboard with quote cards, and a professional profile page for liked and saved quotes.
 - **Backend:** An Express-based Node.js server that handles user registration, login, quote liking/saving, and delivers your motivational quote data. It utilizes SQLite for data storage and JSON Web Tokens (JWT) for authentication.
